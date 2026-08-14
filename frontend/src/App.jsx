@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://hybrid-recommendation-tx3l.onrender.com";
 
 const mbtiInfo = {
   ENFJ: {
@@ -123,25 +123,34 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  // Generate all 500 user IDs
+  const users = Array.from({ length: 500 }, (_, index) => {
+    return `U${String(index + 1).padStart(4, "0")}`;
+  });
+
   const getRecommendations = async () => {
     setLoading(true);
     setMessage("");
 
     try {
-      const response = await fetch(`${API_URL}/recommend/${userId}`);
+      const response = await fetch(
+        `${API_URL}/recommendations/${userId}`
+      );
 
       if (!response.ok) {
-        throw new Error("Unable to load recommendations");
+        throw new Error(
+          `Backend returned status ${response.status}`
+        );
       }
 
       const data = await response.json();
 
       setRecommendations(data.recommendations || []);
     } catch (error) {
-      console.error(error);
+      console.error("Recommendation error:", error);
 
       setMessage(
-        "Unable to load recommendations. Please make sure the FastAPI backend is running."
+        `Unable to load recommendations for ${userId}. Please try again.`
       );
 
       setRecommendations([]);
@@ -169,19 +178,44 @@ function App() {
       });
 
       if (!response.ok) {
-        throw new Error("Feedback failed");
+        throw new Error(
+          `Feedback request failed with status ${response.status}`
+        );
       }
 
       const data = await response.json();
+
+      console.log("Updated weights:", data.updated_weights);
 
       setMessage(
         `${feedback} recorded for ${recommendedUserId}. Your personalized weights have been updated.`
       );
 
-      console.log("Updated weights:", data.updated_weights);
+      // Refresh recommendations after feedback
+      try {
+        const refreshedResponse = await fetch(
+          `${API_URL}/recommendations/${userId}`
+        );
+
+        if (refreshedResponse.ok) {
+          const refreshedData = await refreshedResponse.json();
+
+          setRecommendations(
+            refreshedData.recommendations || []
+          );
+        }
+      } catch (refreshError) {
+        console.error(
+          "Could not refresh recommendations:",
+          refreshError
+        );
+      }
     } catch (error) {
-      console.error(error);
-      setMessage("Unable to record feedback.");
+      console.error("Feedback error:", error);
+
+      setMessage(
+        `Unable to record ${feedback} feedback. Please try again.`
+      );
     }
   };
 
@@ -191,10 +225,13 @@ function App() {
       {/* HEADER */}
       <header className="header">
         <div>
-          <div className="logo">🤝 Intelligent Match</div>
+          <div className="logo">
+            🤝 Intelligent Match
+          </div>
 
           <p>
-            AI-powered user compatibility & personalized recommendations
+            AI-powered user compatibility &
+            personalized recommendations
           </p>
         </div>
       </header>
@@ -216,9 +253,9 @@ function App() {
 
             <p className="hero-text">
               Our intelligent recommendation system combines
-              professional profile similarity, personality compatibility,
-              demographic similarity and user feedback to discover
-              meaningful matches.
+              professional profile similarity, personality
+              compatibility, demographic similarity and user
+              feedback to discover meaningful matches.
             </p>
           </div>
 
@@ -231,29 +268,30 @@ function App() {
 
             <select
               value={userId}
-              onChange={(e) => setUserId(e.target.value)}
+              onChange={(e) => {
+                setUserId(e.target.value);
+                setMessage("");
+              }}
             >
-              <option value="U0001">
-                U0001 — Devansh Soni
-              </option>
 
-              <option value="U0002">
-                U0002 — Chaaya Nadig
-              </option>
+              {users.map((id) => (
+                <option key={id} value={id}>
+                  {id}
+                </option>
+              ))}
 
-              <option value="U0003">
-                U0003 — User U0003
-              </option>
             </select>
 
-            <button onClick={getRecommendations}>
+            <button
+              onClick={getRecommendations}
+              disabled={loading}
+            >
               {loading
                 ? "Finding matches..."
                 : "Find My Matches →"}
             </button>
 
           </div>
-
         </section>
 
         {/* MESSAGE */}
@@ -401,13 +439,14 @@ function App() {
           </div>
 
           {/* NO RESULTS */}
-          {!loading && recommendations.length === 0 && (
-            <div className="empty-state">
-              No recommendations available.
-              Select a profile and click
-              <strong> Find My Matches</strong>.
-            </div>
-          )}
+          {!loading &&
+            recommendations.length === 0 && (
+              <div className="empty-state">
+                No recommendations available.
+                Select a profile and click
+                <strong> Find My Matches</strong>.
+              </div>
+            )}
 
         </section>
 
@@ -618,8 +657,8 @@ function App() {
 
       {/* FOOTER */}
       <footer>
-        Intelligent User Compatibility & Recommendation
-        System · AI / ML Project
+        Intelligent User Compatibility &
+        Recommendation System · AI / ML Project
       </footer>
 
     </div>

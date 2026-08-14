@@ -18,6 +18,8 @@ select {
   min-height: 100vh;
 }
 
+/* HEADER */
+
 .header {
   background: #101828;
   color: white;
@@ -34,11 +36,15 @@ select {
   color: #b8c2d1;
 }
 
+/* MAIN */
+
 main {
   max-width: 1250px;
   margin: auto;
   padding: 45px 25px;
 }
+
+/* HERO */
 
 .hero {
   display: grid;
@@ -73,6 +79,8 @@ main {
   color: #667085;
 }
 
+/* USER SELECTOR */
+
 .user-box {
   background: white;
   padding: 25px;
@@ -86,13 +94,31 @@ main {
   margin-bottom: 10px;
 }
 
+/* IMPORTANT: DROPDOWN FIX */
+
 .user-box select {
   width: 100%;
   padding: 13px;
   border: 1px solid #d0d5dd;
   border-radius: 10px;
   margin-bottom: 12px;
-  background: white;
+
+  background-color: #ffffff;
+  color: #182230;
+
+  cursor: pointer;
+}
+
+.user-box select option {
+  background-color: #ffffff;
+  color: #182230;
+}
+
+.user-box select:focus {
+  outline: none;
+  border-color: #635bff;
+  background-color: #ffffff;
+  color: #182230;
 }
 
 .user-box button {
@@ -106,6 +132,17 @@ main {
   cursor: pointer;
 }
 
+.user-box button:hover {
+  background: #5148e5;
+}
+
+.user-box button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* MESSAGE */
+
 .message {
   background: #ecfdf3;
   border: 1px solid #abefc6;
@@ -114,6 +151,8 @@ main {
   border-radius: 10px;
   margin-bottom: 30px;
 }
+
+/* SECTIONS */
 
 .section {
   margin-bottom: 70px;
@@ -136,6 +175,8 @@ main {
   color: #667085;
 }
 
+/* RECOMMENDATIONS */
+
 .recommendation-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -153,6 +194,7 @@ main {
 .card-top {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .rank {
@@ -219,6 +261,8 @@ main {
   font-size: 12px;
 }
 
+/* WHY MATCH */
+
 .why-match {
   background: #f8f9ff;
   border-radius: 10px;
@@ -236,6 +280,8 @@ main {
   font-size: 14px;
   line-height: 1.5;
 }
+
+/* ACTION BUTTONS */
 
 .card-actions {
   display: flex;
@@ -257,11 +303,32 @@ main {
   color: #067647;
 }
 
+.accept:hover {
+  background: #d1fadf;
+}
+
 .reject {
   background: #fff1f3;
   border: 1px solid #fecdca;
   color: #b42318;
 }
+
+.reject:hover {
+  background: #ffe4e8;
+}
+
+/* EMPTY STATE */
+
+.empty-state {
+  background: white;
+  border: 1px solid #eaecf0;
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+  color: #667085;
+}
+
+/* MBTI SECTION */
 
 .info-section {
   margin-bottom: 70px;
@@ -302,6 +369,47 @@ main {
   line-height: 1.5;
 }
 
+/* DIMENSIONS */
+
+.dimensions-section {
+  margin-bottom: 70px;
+}
+
+.dimensions-section h2 {
+  font-size: 32px;
+  margin: 8px 0 25px;
+}
+
+.dimensions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.dimension-card {
+  background: white;
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid #eaecf0;
+}
+
+.dimension-card strong {
+  color: #635bff;
+  font-size: 20px;
+}
+
+.dimension-card h3 {
+  margin: 8px 0;
+}
+
+.dimension-card p {
+  color: #667085;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* HOW IT WORKS */
+
 .how-section {
   background: #101828;
   color: white;
@@ -331,10 +439,16 @@ main {
   font-weight: 800;
 }
 
+.process h3 {
+  margin: 10px 0;
+}
+
 .process p {
   color: #98a2b3;
   line-height: 1.5;
 }
+
+/* FOOTER */
 
 footer {
   text-align: center;
@@ -343,6 +457,8 @@ footer {
   font-size: 13px;
 }
 
+/* RESPONSIVE */
+
 @media (max-width: 850px) {
   .hero,
   .recommendation-grid {
@@ -350,7 +466,8 @@ footer {
   }
 
   .mbti-grid,
-  .process {
+  .process,
+  .dimensions-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -361,7 +478,20 @@ footer {
 
 @media (max-width: 550px) {
   .mbti-grid,
-  .process {
+  .process,
+  .dimensions-grid {
     grid-template-columns: 1fr;
+  }
+
+  main {
+    padding: 30px 15px;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+  }
+
+  .how-section {
+    padding: 25px;
   }
 }
